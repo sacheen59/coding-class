@@ -1,21 +1,30 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SignUpSchema } from "../../schemas/auth";
 import { registerUser } from "../../utils/server_functions";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(SignUpSchema) });
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
   async function submitHandler({ username, email, password }) {
     console.log(username, password, email);
-    await registerUser(username, email, password);
+    const data = await registerUser(username, email, password);
+    localStorage.setItem("token", data.token);
   }
 
   return (

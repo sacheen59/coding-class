@@ -20,7 +20,6 @@ export async function registerUser(username, email, password) {
       throw new Error(data.message || "Something went wrong");
     }
     toast.success("User registered successfully!");
-    console.log(data);
     return data;
   } catch (error) {
     toast.error(error.message);
