@@ -13,12 +13,14 @@ const passwordValidation = yup
   .required("Password is required")
   .min(8, "Password must be at least 8 character");
 
+const usernameValidation = yup
+  .string()
+  .required("Username is required")
+  .max(10, "Username must be at most 10 characters")
+  .min(3, "Username must be at least 3 characters");
+
 export const SignUpSchema = yup.object({
-  username: yup
-    .string()
-    .required("Username is required")
-    .max(10, "Username must be at most 10 characters")
-    .min(3, "Username must be at least 3 characters"),
+  username: usernameValidation,
   email: emailValidation,
   password: passwordValidation,
   confirmPassword: yup
@@ -28,6 +30,6 @@ export const SignUpSchema = yup.object({
 });
 
 export const LoginSchema = yup.object({
-  email: emailValidation,
+  username: usernameValidation,
   password: passwordValidation,
 });

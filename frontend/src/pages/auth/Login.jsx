@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginSchema } from "../../schemas/auth";
+import { loginUser } from "../../utils/server_functions";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(LoginSchema) });
 
-  function submitHandler(data) {
-    console.log("login daga ===> ", data);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
+  async function submitHandler({ username, password }) {
+    const data = await loginUser(username, password);
+    localStorage.setItem("token", data.token);
+    navigate("/");
   }
 
   return (
@@ -21,26 +33,29 @@ const Login = () => {
         <div className="col-md-4 shadow-sm rounded my-5 p-5">
           <h4 className="text-center">Welcome Back!</h4>
           <form onSubmit={handleSubmit(submitHandler)}>
-            <div class="mb-3 mt-4">
-              <label for="exampleInputEmail1" className="form-label text-muted">
-                Email address
+            <div className="mb-3 mt-4">
+              <label
+                htmlFor="exampleInputEmail1"
+                className="form-label text-muted"
+              >
+                Username
               </label>
               <input
-                type="email"
+                type="username"
                 className="form-control text-sm"
-                placeholder="something@example.com"
+                placeholder="Username"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
-                {...register("email")}
+                {...register("username")}
               />
-              {errors.email && (
+              {errors.username && (
                 <p className="text-danger small-text mt-1">
-                  {errors.email.message}
+                  {errors.username.message}
                 </p>
               )}
             </div>
-            <div class="mb-3 text-muted">
-              <label for="exampleInputPassword1" class="form-label">
+            <div className="mb-3 text-muted">
+              <label htmlFor="exampleInputPassword1" className="form-label">
                 Password
               </label>
               <input
@@ -56,8 +71,8 @@ const Login = () => {
                 </p>
               )}
             </div>
-            <div class="d-grid">
-              <button class="btn btn-primary" type="submit">
+            <div className="d-grid">
+              <button className="btn btn-primary" type="submit">
                 Login
               </button>
             </div>

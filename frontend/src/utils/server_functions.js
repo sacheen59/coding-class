@@ -26,3 +26,27 @@ export async function registerUser(username, email, password) {
     console.log(error);
   }
 }
+
+export async function loginUser(username, password) {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/login/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong");
+    }
+    toast.success(data.message);
+    return data;
+  } catch (error) {
+    toast.error(error.message);
+    console.log(error);
+  }
+}

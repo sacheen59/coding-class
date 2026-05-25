@@ -22,7 +22,6 @@ const Signup = () => {
   }, [navigate]);
 
   async function submitHandler({ username, email, password }) {
-    console.log(username, password, email);
     const data = await registerUser(username, email, password);
     localStorage.setItem("token", data.token);
   }
